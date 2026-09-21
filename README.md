@@ -11,11 +11,11 @@ gesucht sind die Quellen, ohne das Array oder die Neuronen zu kennen. Das ist de
 Dimensionsreduktion-Linie: sie ist linear und behebt eine andere PCA-Annahme ("unkorreliert genügt"), und sie trennt Quellen statt Dimensionen zu verringern.
 ```
 ica-demo (Wurzel) → SOBI        (zeitliche Struktur statt Nicht-Gaußianität: sobi-demo)
-                  → NMF         (Nichtnegativität statt Unabhängigkeit)
+                  → NMF         (Nichtnegativität statt Unabhängigkeit: nmf-demo)
                   → Sparse Component Analysis   (mehr Quellen als Sensoren: sca-demo)
                   → Spike-Sorting-Zweig         (Standard-Pipeline, Vorlagenabgleich, Verzögerungsgraph: spike-sorting-demo, template-matching-demo, delay-graph-demo)
 ```
-Gebaut sind inzwischen SOBI, SCA und der Spike-Sorting-Zweig; NMF fehlt noch. Die Demo selbst markiert nur, welche ICA-Annahme die Nachfolger jeweils lockern.
+Gebaut sind inzwischen SOBI, SCA, NMF und der Spike-Sorting-Zweig – die Linie ist vollständig. Die Demo selbst markiert nur, welche ICA-Annahme die Nachfolger jeweils lockern.
 
 | Frage | Ergebnis (4 Neuronen, 6 Elektroden, wenn nicht anders angegeben; Mittel über 5 feste Datensätze, Seeds 100000–100004) |
 |---|---|
