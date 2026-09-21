@@ -10,12 +10,12 @@ gesucht sind die Quellen, ohne das Array oder die Neuronen zu kennen. Das ist de
 **Einordnung in die Reihe (die Kanten des Graphen):** ICA ist die Wurzel der Quellentrennung-Linie. Die einzige Kante zurück in die Dimensionsreduktion ist die **PCA-Weißung** (Schritt 3 der Demo) – ICA gehört bewusst nicht zur
 Dimensionsreduktion-Linie: sie ist linear und behebt eine andere PCA-Annahme ("unkorreliert genügt"), und sie trennt Quellen statt Dimensionen zu verringern.
 ```
-ica-demo (Wurzel) → SOBI        (zeitliche Struktur statt Nicht-Gaußianität)
+ica-demo (Wurzel) → SOBI        (zeitliche Struktur statt Nicht-Gaußianität: sobi-demo)
                   → NMF         (Nichtnegativität statt Unabhängigkeit)
-                  → Sparse Component Analysis   (mehr Quellen als Sensoren)
-                  → Spike-Sorting-Zweig         (Standard-Pipeline, Vorlagenabgleich, Verzögerungsgraph)
+                  → Sparse Component Analysis   (mehr Quellen als Sensoren: sca-demo)
+                  → Spike-Sorting-Zweig         (Standard-Pipeline, Vorlagenabgleich, Verzögerungsgraph: spike-sorting-demo, template-matching-demo, delay-graph-demo)
 ```
-Die Nachfolger sind noch nicht gebaut; die Demo markiert nur, welche ICA-Annahme sie jeweils lockern.
+Gebaut sind inzwischen SOBI, SCA und der Spike-Sorting-Zweig; NMF fehlt noch. Die Demo selbst markiert nur, welche ICA-Annahme die Nachfolger jeweils lockern.
 
 | Frage | Ergebnis (4 Neuronen, 6 Elektroden, wenn nicht anders angegeben; Mittel über 5 feste Datensätze, Seeds 100000–100004) |
 |---|---|
