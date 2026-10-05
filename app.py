@@ -465,7 +465,7 @@ jeweils orthogonal zu den bisherigen. Die Schätzquellen sind $\hat s = W K \til
 
 **Kennzahlen.** Zuordnung Quelle - Komponente: exakt (Bitmasken-DP) über die Summe der $|\rho|$; Vorzeichen und Skala per Regression. SIR $= 10\log_{10}\frac{\rho^2}{1-\rho^2}$. **Amari-Index** von $P = W K A$:
 $\frac{1}{2d(d-1)}\Big[\sum_i \big(\tfrac{\sum_j |p_{ij}|}{\max_j |p_{ij}|} - 1\big) + \sum_j \big(\tfrac{\sum_i |p_{ij}|}{\max_i |p_{ij}|} - 1\big)\Big]$, $d = \max(k, \text{Zeilen})$.
-**Spitzen-F1**: Schwelle $\max(4\sigma_{\text{MAD}},\, 0.3 \times$ Median der 10 tiefsten Spitzen$)$ auf der zugeordneten, im Vorzeichen der Quelle ausgerichteten Spur; Treffer = innerhalb von ±4 Abtastwerten.
+**Spitzen-F1**: Schwelle $\max(4\sigma_{\text{MAD}},\, 0.3 \times$ Median der (höchstens) 10 tiefsten Spitzen$)$ auf der zugeordneten, im Vorzeichen der Quelle ausgerichteten Spur; Treffer = innerhalb von ±4 Abtastwerten.
 
 **Grenzen.** (1) *Gauß'sche Quellen*: die Verteilung ändert sich unter Drehungen nicht, $J$ ist konstant - zwei solche Quellen sind nicht trennbar. (2) *Weniger Sensoren als Quellen*: $A$ ist nicht umkehrbar.
 (3) *Gefaltete Mischung*: $x(t) = \sum_\tau A_\tau s(t - \tau)$ - eine einzige Matrix $W$ genügt nicht. (4) *Rauschen* wird mit entmischt und verstärkt. (5) Die **Quellenzahl** wird als bekannt angenommen.
