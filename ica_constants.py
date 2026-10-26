@@ -73,18 +73,18 @@ PRESETS = {
     "Starkes Rauschen": _preset(noise=0.7),
 }
 PRESET_HELP = {
-    "Vier Neuronen, sechs Elektroden": "Der Grundfall: vier Neuronen, sechs Elektroden, wenig Rauschen, keine Verzögerung. ICA trennt die vier Neuronen fast vollständig (Korrelation 0.98, alle Spitzen gefunden), "
-                                       "die PCA nicht (0.65). Die beste Einzelelektrode liegt bei 0.73.",
-    "Zwei Rhythmus-Quellen": "Zwei sinusförmige Hintergrundrhythmen kommen dazu (sechs Quellen, sechs Elektroden). Sinusquellen sind unter-Gaußsch (Kurtosis -1.5, Neuronen +35 bis +99) - ICA trennt beide Arten; "
+    "Vier Neuronen, sechs Elektroden": "Der Grundfall: vier Neuronen, sechs Elektroden, wenig Rauschen, keine Verzögerung. ICA trennt die vier Neuronen fast vollständig (Korrelation 0,98, alle Spitzen gefunden), "
+                                       "die PCA nicht (0,65). Die beste Einzelelektrode liegt bei 0,73.",
+    "Zwei Rhythmus-Quellen": "Zwei sinusförmige Hintergrundrhythmen kommen dazu (sechs Quellen, sechs Elektroden). Sinusquellen sind unter-Gaußsch (Kurtosis -1,5, Neuronen +35 bis +99) - ICA trennt beide Arten; "
                              "das Rhythmus-Paar erreicht in jedem Datensatz einen Signal-zu-Interferenz-Wert um 8 dB.",
-    "Zwei Gauß-Quellen": "Zwei Gauß'sche Hintergrundquellen: eine einzelne wäre trennbar, zwei nicht (sie lassen sich beliebig drehen, ohne die Nicht-Gaußianität zu ändern). Die Neuronen werden weiter getrennt (0.92), "
-                         "die Trennung des Paares ist Zufall: Signal-zu-Interferenz zwischen 0 und 7 dB je nach Datensatz.",
-    "Zu wenige Elektroden": "Nur drei Elektroden für vier Neuronen: die Mischung ist nicht mehr umkehrbar. ICA findet nur drei Komponenten und die Korrelation fällt von 0.98 auf 0.68 (Spitzen-Trefferquote von 1.0 auf etwa 0.7) - "
+    "Zwei Gauß-Quellen": "Zwei Gauß'sche Hintergrundquellen: eine einzelne wäre trennbar, zwei nicht sicher (sie lassen sich beliebig drehen, ohne die Nicht-Gaußianität zu ändern). Die Neuronen werden weiter getrennt (0,92), "
+                         "die Trennung des Paares hängt vom Datensatz ab: Signal-zu-Interferenz zwischen 0 und 7 dB.",
+    "Zu wenige Elektroden": "Nur drei Elektroden für vier Neuronen: die Mischung ist nicht mehr umkehrbar. ICA findet nur drei Komponenten und die Korrelation fällt von 0,98 auf 0,68 (Spitzen-Trefferquote von 1,0 auf etwa 0,7) - "
                             "das ist der Fall der Sparse Component Analysis.",
-    "Laufzeitverzögerung": "Das Signal erreicht ferne Elektroden später (bis 8 Abtastwerte je Einheitsabstand = 0.8 ms). Die Mischung ist nicht mehr momentan, die ICA-Annahme verletzt: Korrelation 0.76 statt 0.98, "
-                           "Trefferquote der Spitzen etwa 0.65. Genau hier setzt die Verzögerungsgraph-Methode des Spike-Sortings an.",
-    "Starkes Rauschen": "Sensorrauschen von 70 % des Neuronen-Signals. Entmischen verstärkt das Rauschen mit: ICA (Korrelation etwa 0.5) liegt sogar unter der besten Einzelelektrode (0.59); "
-                        "erst bei weniger Rauschen (bis etwa 0.4) ist ICA wieder vorn.",
+    "Laufzeitverzögerung": "Das Signal erreicht ferne Elektroden später (bis 8 Abtastwerte je Einheitsabstand = 0,8 ms). Die Mischung ist nicht mehr momentan, die ICA-Annahme verletzt: Korrelation 0,76 statt 0,98, "
+                           "Trefferquote der Spitzen etwa 0,65. Genau hier setzt die Verzögerungsgraph-Methode des Spike-Sortings an.",
+    "Starkes Rauschen": "Sensorrauschen von 70 % des Neuronen-Signals. Entmischen verstärkt das Rauschen mit: ICA (Korrelation etwa 0,5) liegt sogar unter der besten Einzelelektrode (0,59); "
+                        "erst bei weniger Rauschen (bis etwa 0,4) ist ICA wieder vorn.",
 }
 # Bänder: |Korrelation| der Neuronen (ica, pca, electrodes), Spitzen-F1 der ICA (f1), Urteil (verdict) - mit dem ausgelieferten Code kalibriert, bewusst weit
 PRESET_EXPECTED_BANDS = {

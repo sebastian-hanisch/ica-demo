@@ -47,7 +47,7 @@ Regler: Neuronen (2–5), Elektroden (1–8), Hintergrundquellen (0–2) mit Art
 |---|---|---|---|---|---|
 | Vier Neuronen, sechs Elektroden | 0.98 | 0.66 | 0.73 | 1.00 | ICA vorn |
 | Zwei Rhythmus-Quellen | 0.92 | 0.57 | 0.57 | 1.00 | ICA vorn; SIR des Rhythmus-Paars ≈ 8 dB |
-| Zwei Gauß-Quellen | 0.92 | 0.57 | 0.56 | 1.00 | Gauß-Paar nicht trennbar |
+| Zwei Gauß-Quellen | 0.92 | 0.57 | 0.56 | 1.00 | Gauß-Paar nicht sicher trennbar |
 | Zu wenige Elektroden (3) | 0.68 | 0.55 | 0.58 | 0.67–0.70 | zu wenige Elektroden |
 | Laufzeitverzögerung (8) | 0.76 | 0.59 | 0.73 | 0.56–0.77 | Verzögerung |
 | Starkes Rauschen (0.7) | 0.49–0.55 | 0.41 | 0.59 | 0.52–0.67 | Rauschen (Einzelelektrode besser) |

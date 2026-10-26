@@ -100,6 +100,21 @@ Daraus gewinnt sie die Quellen zurück - **ohne das Array oder die Neuronen zu k
 Laufzeitverzögerungen zwischen den Elektroden, Rauschen. Wie das Verfahren funktioniert, erklärt der aufgeklappte Abschnitt direkt darunter.
 """
 )
+
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/ica-quellentrennung-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Stellen Sie sich ein Feld aus Elektroden vor, das die Signale mehrerer Nervenzellen misst. Jede Elektrode hört alle Zellen gleichzeitig, die nahe laut und die ferne leise, und liefert deshalb eine **Mischung**. Gesucht sind die einzelnen Zellen, ohne zu wissen, wo sie liegen und wie die Mischung entsteht. Das leistet die **ICA** (FastICA).
+
+Der Gedanke dahinter: Eine Mischung unabhängiger Quellen ist gleichmäßiger als die Quellen selbst. Nervenzellen sind dagegen sehr ungleichmäßig, mit langer Ruhe und kurzen, großen Ausschlägen. Die ICA ordnet die Signale zuerst, sodass sie kein gemeinsames Steigen und Fallen mehr haben (**Weißen**). Dann dreht sie sie so lange, bis die Ergebnisse möglichst ungleichmäßig sind (**Nicht-Gaußianität**). Das sind die gesuchten Quellen, nur Reihenfolge, Vorzeichen und Skalierung bleiben unbestimmt.
+
+Das klappt unter Voraussetzungen: mindestens so viele Elektroden wie Zellen, höchstens eine gleichmäßig rauschende Quelle, eine gleichzeitige Mischung und nicht zu viel Rauschen. Mit den Reglern der Demo lässt sich jede dieser Voraussetzungen verletzen.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/ica-quellentrennung-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
 st.caption(
     "Anders als die Fall-Demos im Portfolio, die an einem Anwendungsfall mehrere Verfahren vergleichen, zeigt diese Demo - erstes Stück (Wurzel) der Quellentrennung-Linie der \"Konzepte\"-Reihe - **ein** Verfahren "
     "an einem wachsenden Beispiel. Die Kante zur Dimensionsreduktion ist nur die PCA-Weißung, die hier als Schritt 3 vorkommt."
@@ -117,7 +132,7 @@ with st.expander("So funktioniert die ICA", expanded=True):
    ($w \\leftarrow E[z\\,g(w^\\top z)] - E[g'(w^\\top z)]\\,w$, dann orthogonalisieren) und einer **Kontrastfunktion** $g$ (log cosh, Gauß-Ableitung oder Kurtosis).
 3. **Ergebnis.** Die Schätzungen $\\hat s$ stimmen mit den Quellen überein - **bis auf Reihenfolge, Vorzeichen und Skalierung**, die prinzipiell nicht bestimmbar sind (Abschnitt 🔀).
 
-Spikes sind ein dankbarer Fall: kurze, seltene, große Ausschläge - **stark nicht-Gauß'sch** (Kurtosis um 30-100, Gauß = 0). Die Grenzen zeigen die Abschnitte darunter: **zwei Gauß'sche Quellen** sind nicht trennbar,
+Spikes sind ein dankbarer Fall: kurze, seltene, große Ausschläge - **stark nicht-Gauß'sch** (Kurtosis um 30-100, Gauß = 0). Die Grenzen zeigen die Abschnitte darunter: **zwei Gauß'sche Quellen** sind nicht sicher trennbar,
 bei **weniger Elektroden als Quellen** ist die Mischung nicht umkehrbar, und eine **Laufzeitverzögerung** zwischen den Elektroden macht die Mischung nicht mehr momentan.
         """
     )
@@ -144,7 +159,7 @@ with st.sidebar:
     )
     n_electrodes = st.slider(
         "Elektroden", *bounds("n_electrodes_slider"), key="n_electrodes_slider",
-        help="Aufnahmestellen auf einer Zeile. Mit weniger Elektroden als Quellen ist die Mischung nicht umkehrbar: bei 4 Neuronen fällt die Korrelation von 0.98 (4 Elektroden) auf 0.68 (3) und 0.41 (2).",
+        help="Aufnahmestellen auf einer Zeile. Mit weniger Elektroden als Quellen ist die Mischung nicht umkehrbar: bei 4 Neuronen fällt die Korrelation von 0,98 (4 Elektroden) auf 0,68 (3) und 0,41 (2).",
     )
     n_background = st.slider(
         "Hintergrundquellen", *bounds("n_background_slider"), key="n_background_slider",
@@ -153,29 +168,29 @@ with st.sidebar:
     if n_background > 0:
         kind = st.selectbox(
             "Art des Hintergrunds", C.BACKGROUND_KINDS, key="kind_select", format_func=lambda k: C.BACKGROUND_LABELS[k],
-            help="Gauß-Rauschen ist Gauß'sch (Kurtosis 0) - eine solche Quelle ist trennbar, zwei nicht. Sinusförmige Rhythmen sind unter-Gauß'sch (Kurtosis -1.5) und trennbar.",
+            help="Gauß-Rauschen ist Gauß'sch (Kurtosis 0) - eine solche Quelle ist trennbar, zwei nicht sicher. Sinusförmige Rhythmen sind unter-Gauß'sch (Kurtosis -1,5) und trennbar.",
         )
         st.session_state["_kind_kept"] = kind
     else:
         kind = st.session_state.get("_kind_kept", C.DEFAULT_BACKGROUND_KIND)
     noise = st.slider(
         "Rauschen", *bounds("noise_slider"), key="noise_slider", step=0.05,
-        help="Sensorrauschen relativ zur Stärke des Neuronen-Signals. Die Korrelation der Neuronen sinkt von 0.98 (Rauschen 0.05) auf 0.69 (0.4) und 0.43 (1.0).",
+        help="Sensorrauschen relativ zur Stärke des Neuronen-Signals. Die Korrelation der Neuronen sinkt von 0,98 (Rauschen 0,05) auf 0,69 (0,4) und 0,43 (1,0).",
     )
     delay = st.slider(
         "Laufzeitverzögerung", *bounds("delay_slider"), key="delay_slider",
-        help="Verzögerung je Einheitsabstand in Abtastwerten (0.1 ms). 0 = Mischung momentan, ICA-Annahme erfüllt. Schon 2 senken die Korrelation von 0.98 auf 0.92, 8 auf 0.76.",
+        help="Verzögerung je Einheitsabstand in Abtastwerten (0,1 ms). 0 = Mischung momentan, ICA-Annahme erfüllt. Schon 2 senken die Korrelation von 0,98 auf 0,92, 8 auf 0,76.",
     )
     n_samples = st.slider(
         "Länge der Aufnahme", *bounds("n_samples_slider"), key="n_samples_slider", step=1000,
-        help="Abtastwerte bei 10 kHz. Erstaunlich unkritisch: schon 1000 Abtastwerte (0.1 s) reichen für Korrelation 0.98 - bei diesem Rauschen begrenzt nicht die Datenmenge, sondern das Rauschen.",
+        help="Abtastwerte bei 10 kHz. Erstaunlich unkritisch: schon 1000 Abtastwerte (0,1 s) reichen für Korrelation 0,98 - bei diesem Rauschen begrenzt nicht die Datenmenge, sondern das Rauschen.",
     )
     seed = st.number_input("Zufalls-Seed", *bounds("seed_input"), key="seed_input", step=1)
 
     st.markdown("**FastICA**")
     contrast = st.selectbox(
         "Kontrastfunktion", C.CONTRASTS, key="contrast_select", format_func=lambda c: C.CONTRAST_LABELS[c],
-        help="Wie 'Nicht-Gaußianität' gemessen wird. log cosh und Kurtosis liefern bei allen Starts dasselbe; die Gauß-Ableitung landet bei einzelnen Starts schlechter (schlechtester Start 0.84 gegen 0.98). Kurtosis braucht die wenigsten Iterationen.",
+        help="Wie 'Nicht-Gaußianität' gemessen wird. log cosh und Kurtosis liefern bei allen Starts dasselbe; die Gauß-Ableitung landet bei einzelnen Starts schlechter (schlechtester Start 0,84 gegen 0,98). Kurtosis braucht die wenigsten Iterationen.",
     )
     init_start = st.selectbox(
         "Start der Entmischung", C.INIT_STARTS, key="init_start_select", format_func=lambda i: f"Start {i}",
@@ -311,8 +326,8 @@ if code == "underdetermined":
 elif code == "not_converged":
     st.warning(f"⚠️ Die Fixpunkt-Iteration ist nach {vd['n_iter']} Iterationen nicht konvergiert - das Ergebnis ist unzuverlässig. Anderer Start oder andere Kontrastfunktion probieren.")
 elif code == "gauss_pair":
-    st.warning(f"⚠️ Zwei Gauß'sche Hintergrundquellen: sie lassen sich beliebig drehen, ohne dass sich ihre Nicht-Gaußianität ändert - ICA kann sie prinzipiell nicht trennen (SIR des Paars hier {vd['bg_sir']:.1f} dB, je nach Datensatz "
-               f"zwischen 0 und 7 dB, Zufall; Abschnitt 🚧). Die Neuronen werden trotzdem getrennt (Korrelation {vd['ica']:.2f}).")
+    st.warning(f"⚠️ Zwei Gauß'sche Hintergrundquellen: sie lassen sich beliebig drehen, ohne dass sich ihre Nicht-Gaußianität ändert - ICA kann sie nicht sicher trennen (SIR des Paars hier {vd['bg_sir']:.1f} dB, je nach Datensatz "
+               f"zwischen 0 und 7 dB; Abschnitt 🚧). Die Neuronen werden trotzdem getrennt (Korrelation {vd['ica']:.2f}).")
 elif code == "delay":
     st.warning(f"⚠️ Die Laufzeitverzögerung verletzt die Annahme der momentanen Mischung: Korrelation {vd['ica']:.2f} statt {vd['ref_instant']:.2f} ohne Verzögerung (gleiche Daten), Spitzen-F1 {vd['f1']:.2f}. "
                "Eine Entmischung mit einer einzigen Matrix kann Verzögerungen nicht ausgleichen - das ist der Ansatzpunkt der Verzögerungsgraph-Methode im Spike-Sorting.")
@@ -362,7 +377,7 @@ kurt_ica = np.array([analysis.kurtosis["ica"][j] if j >= 0 else np.nan for j in 
 kurt_pca = np.array([analysis.kurtosis["pca"][j] if j >= 0 else np.nan for j in pca_idx])
 st.plotly_chart(build_kurtosis(labels, [("wahre Quellen", kurt_true, GREEN), ("PCA-Komponenten", kurt_pca, ORANGE), ("ICA-Komponenten", kurt_ica, BLUE)]), width="stretch", key="kurtosis")
 st.caption(
-    "Exzess-Kurtosis je Quelle (Gauß = 0; Spitzen weit darüber, Sinusrhythmen bei -1.5). Jede PCA-Komponente ist eine Mischung mehrerer Quellen und damit **Gauß'scher** (kleinere Kurtosis) als die Quellen; "
+    "Exzess-Kurtosis je Quelle (Gauß = 0; Spitzen weit darüber, Sinusrhythmen bei -1,5). Jede PCA-Komponente ist eine Mischung mehrerer Quellen und damit **Gauß'scher** (kleinere Kurtosis) als die Quellen; "
     "die ICA-Komponenten kommen ihnen nahe, weil die ICA genau diese Nicht-Gaußianität maximiert."
 )
 if st.button("Kontrastfunktionen und Startwerte vergleichen (dauert einige Sekunden)", key="contrast_start"):
@@ -438,7 +453,7 @@ st.markdown(
     """
 | Annahme der ICA | Was passiert, wenn sie verletzt ist | Wer setzt an |
 |---|---|---|
-| **nicht Gauß'sch** | Zwei Gauß'sche Quellen sind beliebig drehbar - nicht trennbar. Eine einzelne bleibt trennbar. | **SOBI**: nutzt die zeitliche Struktur (verschiedene Autokorrelation) statt der Verteilungsform |
+| **nicht Gauß'sch** | Zwei Gauß'sche Quellen sind beliebig drehbar - nicht sicher trennbar (je nach Datensatz gelingt es teils trotzdem). Eine einzelne bleibt trennbar. | **SOBI**: nutzt die zeitliche Struktur (verschiedene Autokorrelation) statt der Verteilungsform |
 | **mindestens so viele Sensoren wie Quellen** | Die Mischung ist nicht umkehrbar (Abschnitte 🎯 und 📐). | **Sparse Component Analysis**: mehr Quellen als Sensoren, wenn die Quellen selten gleichzeitig aktiv sind |
 | **momentane Mischung** | Laufzeitunterschiede zwischen den Elektroden verschlechtern die Trennung (Abschnitte 🎯 und 📐). | **Spike-Sorting-Zweig** inkl. Verzögerungsgraph und Vorlagenabgleich |
 | **Vorzeichen frei** | Bei Quellen, die nur positiv sein können (Leistung, Verbrauch), ist das Vorzeichen nicht beliebig. | **NMF**: Nichtnegativität statt Unabhängigkeit |
@@ -449,6 +464,31 @@ st.caption("Die genannten Verfahren sind die nächsten Stücke der Quellentrennu
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/ica-quellentrennung-erklaert.json, nicht von Hand ändern)
+    st.markdown(
+        r"""
+**Lesehilfe.** Gegeben sind die Signale $x$ der Elektroden, eine Mischung unbekannter, voneinander unabhängiger Quellen. Gesucht ist eine Entmischung $W$, die die Quellen $s$ zurückgibt, bis auf Reihenfolge, Vorzeichen und Skala.
+
+| Symbol | Bedeutung |
+|---|---|
+| $x$, $s$ | Signale der Elektroden bzw. der Quellen (Neuronen, Hintergrund) |
+| $A$ | Mischmatrix (unbekannt): wie stark jede Quelle an jeder Elektrode ankommt |
+| $\varepsilon$ | Rauschen der Elektroden |
+| $n$, $k$ | Zahl der Elektroden bzw. der Quellen, es gilt $n \ge k$ |
+| $T$ | Zahl der Abtastwerte |
+| $\tilde X$, $C$ | zentrierte Signale und ihre Kovarianzmatrix |
+| $V$, $\Lambda$ | Eigenvektoren und Eigenwerte von $C$ |
+| $K$, $Z$ | Weißungsmatrix und die geweißten Daten (Kovarianz $I$) |
+| $W$, $\hat s$ | Entmischung bzw. geschätzte Quellen |
+| $G$, $g$ | Kontrastfunktion und ihre Ableitung, $g = G'$ |
+| $J$, $\nu$ | Maß für die Nicht-Gaußianität einer Projektion $y$ bzw. eine standardnormalverteilte Vergleichsgröße |
+| $E[\cdot]$ | Erwartungswert (Mittel über die Abtastwerte) |
+| $\rho$ | Korrelation zwischen einer Quelle und ihrer Schätzung (Grundlage von SIR und Amari-Index) |
+
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/ica-quellentrennung-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
     st.markdown(
         r"""
 **Modell.** $x(t) = A\,s(t) + \varepsilon(t)$ mit $x \in \mathbb{R}^n$ (Elektroden), $s \in \mathbb{R}^k$ (Quellen, statistisch unabhängig, höchstens eine Gauß'sch), $A \in \mathbb{R}^{n \times k}$, $n \ge k$.
@@ -467,7 +507,7 @@ jeweils orthogonal zu den bisherigen. Die Schätzquellen sind $\hat s = W K \til
 $\frac{1}{2d(d-1)}\Big[\sum_i \big(\tfrac{\sum_j |p_{ij}|}{\max_j |p_{ij}|} - 1\big) + \sum_j \big(\tfrac{\sum_i |p_{ij}|}{\max_i |p_{ij}|} - 1\big)\Big]$, $d = \max(k, \text{Zeilen})$.
 **Spitzen-F1**: Schwelle $\max(4\sigma_{\text{MAD}},\, 0.3 \times$ Median der (höchstens) 10 tiefsten Spitzen$)$ auf der zugeordneten, im Vorzeichen der Quelle ausgerichteten Spur; Treffer = innerhalb von ±4 Abtastwerten.
 
-**Grenzen.** (1) *Gauß'sche Quellen*: die Verteilung ändert sich unter Drehungen nicht, $J$ ist konstant - zwei solche Quellen sind nicht trennbar. (2) *Weniger Sensoren als Quellen*: $A$ ist nicht umkehrbar.
+**Grenzen.** (1) *Gauß'sche Quellen*: die Verteilung ändert sich unter Drehungen nicht, $J$ ist konstant - zwei solche Quellen sind nicht sicher trennbar. (2) *Weniger Sensoren als Quellen*: $A$ ist nicht umkehrbar.
 (3) *Gefaltete Mischung*: $x(t) = \sum_\tau A_\tau s(t - \tau)$ - eine einzige Matrix $W$ genügt nicht. (4) *Rauschen* wird mit entmischt und verstärkt. (5) Die **Quellenzahl** wird als bekannt angenommen.
 (6) FastICA nutzt nur die Verteilung einzelner Zeitpunkte, nicht deren zeitliche Reihenfolge.
 
