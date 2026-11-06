@@ -57,7 +57,7 @@ Kurtosis der Neuronen im Standard-Seed: 99 / 35 / 41 / 43 (Gauß = 0), Sinusrhyt
 ## Modell und Verfahren
 
 - **Szenario** (`ica_scenario.py`): 10 kHz; Neuronen mit biphasischer Wellenform (30 Abtastwerte, negative Spitze), Poisson-artigem Feuern (20–35 Hz) mit 2 ms Refraktärzeit; Hintergrund: AR(1)-Gauß-Rauschen (φ = 0.95 bzw. 0.5) oder Sinusrhythmus (10 bzw. 23 Hz).
-  Mischung: Elektroden auf einer Zeile, Neuronen an festen Orten, Gewicht ∝ 1/(d² + ε); Hintergrund flächig (gleich stark bzw. Rampe). Verzögerung = round(δ · Abstand zur nächsten Elektrode) Abtastwerte, nur für Neuronen.
+  Mischung: Elektroden auf einer Zeile, Neuronen an festen Orten, Gewicht ∝ 1/(d² + ε); Hintergrund flächig (gleich stark bzw. Rampe). Verzögerung = round(δ · (Abstand zur Elektrode − Abstand zur nächsten Elektrode)) Abtastwerte, also der Mehrabstand gegenüber der nächsten Elektrode, nur für Neuronen.
   Rauschen relativ zum Neuronen-Signal (unabhängig von der Zahl der Hintergrundquellen). Jede Quelle hat einen eigenen Zufallsstrom (Seed, Nummer): Neuron 1 feuert für einen Seed immer gleich, egal wie viele Neuronen oder Elektroden eingestellt sind.
 - **FastICA** (`ica_algorithm.py`, numpy von Grund auf, Hyvärinen 1999): Weißen per Eigenzerlegung (Kovarianz exakt I), Fixpunkt-Iteration `w ← E[z g(wᵀz)] − E[g'(wᵀz)] w`, **symmetrisch** (W(WᵀW)^-½) oder **Deflation**; Kontrastfunktionen log cosh, Gauß-Ableitung, Kurtosis; die Quellenzahl wird als bekannt vorgegeben.
   Gegen `sklearn.decomposition.FastICA` getestet (Zuordnungs-Korrelation > 0.99).
