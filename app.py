@@ -94,7 +94,7 @@ st.title("🧠 Unabhängige Komponentenanalyse (ICA) an Mehrelektroden-Signalen"
 st.markdown(
     """
 Ein **Elektrodenarray** misst nicht einzelne Nervenzellen, sondern an jeder Elektrode eine **Mischung**: jedes Neuron ist an nahen Elektroden laut, an fernen leise - und alle feuern gleichzeitig.
-Die **ICA** (FastICA) ist das erste Stück der **Quellentrennung-Linie** und geht von einer einzigen Annahme aus: Die Quellen sind **statistisch unabhängig** und **nicht Gauß'sch**, die Mischung ist **momentan und linear**.
+Die **ICA** (FastICA) ist das erste Stück der **Quellentrennung-Linie** und geht von einer einzigen Annahme aus: Die Quellen sind **statistisch unabhängig** und **nicht Gauß'sch**, die Mischung ist **instantan und linear**.
 Daraus gewinnt sie die Quellen zurück - **ohne das Array oder die Neuronen zu kennen**. Die PCA kann das nicht: Sie macht die Mischung nur **unkorreliert** (Weißen), aber
 *unkorreliert ist nicht unabhängig* - es bleibt eine Drehung offen, die erst die ICA findet. Die Demo misst, was das bringt und wo die Annahmen enden: Gauß'sche Quellen, zu wenige Elektroden,
 Laufzeitverzögerungen zwischen den Elektroden, Rauschen. Wie das Verfahren funktioniert, erklärt der aufgeklappte Abschnitt direkt darunter.
@@ -133,7 +133,7 @@ with st.expander("So funktioniert die ICA", expanded=True):
 3. **Ergebnis.** Die Schätzungen $\\hat s$ stimmen mit den Quellen überein - **bis auf Reihenfolge, Vorzeichen und Skalierung**, die prinzipiell nicht bestimmbar sind (Abschnitt 🔀).
 
 Spikes sind ein dankbarer Fall: kurze, seltene, große Ausschläge - **stark nicht-Gauß'sch** (Kurtosis um 30-100, Gauß = 0). Die Grenzen zeigen die Abschnitte darunter: **zwei Gauß'sche Quellen** sind nicht sicher trennbar,
-bei **weniger Elektroden als Quellen** ist die Mischung nicht umkehrbar, und eine **Laufzeitverzögerung** zwischen den Elektroden macht die Mischung nicht mehr momentan.
+bei **weniger Elektroden als Quellen** ist die Mischung nicht umkehrbar, und eine **Laufzeitverzögerung** zwischen den Elektroden macht die Mischung nicht mehr instantan.
         """
     )
 
@@ -168,7 +168,7 @@ with st.sidebar:
     if n_background > 0:
         kind = st.selectbox(
             "Art des Hintergrunds", C.BACKGROUND_KINDS, key="kind_select", format_func=lambda k: C.BACKGROUND_LABELS[k],
-            help="Gauß-Rauschen ist Gauß'sch (Kurtosis 0) - eine solche Quelle ist trennbar, zwei nicht sicher. Sinusförmige Rhythmen sind unter-Gauß'sch (Kurtosis -1,5) und trennbar.",
+            help="Gauß-Rauschen ist Gauß'sch (Kurtosis 0) - eine solche Quelle ist trennbar, zwei nicht sicher. Sinusförmige Rhythmen sind sub-Gauß'sch (Kurtosis -1,5) und trennbar.",
         )
         st.session_state["_kind_kept"] = kind
     else:
@@ -179,7 +179,7 @@ with st.sidebar:
     )
     delay = st.slider(
         "Laufzeitverzögerung", *bounds("delay_slider"), key="delay_slider",
-        help="Verzögerung je Einheitsabstand in Abtastwerten (0,1 ms). 0 = Mischung momentan, ICA-Annahme erfüllt. Schon 2 senken die Korrelation von 0,98 auf 0,92, 8 auf 0,76.",
+        help="Verzögerung je Einheitsabstand in Abtastwerten (0,1 ms). 0 = Mischung instantan, ICA-Annahme erfüllt. Schon 2 senken die Korrelation von 0,98 auf 0,92, 8 auf 0,76.",
     )
     n_samples = st.slider(
         "Länge der Aufnahme", *bounds("n_samples_slider"), key="n_samples_slider", step=1000,
@@ -314,7 +314,7 @@ m1, m2, m3, m4 = st.columns(4)
 m1.metric("Korrelation der Neuronen (ICA)", f"{ica_m.neuron_corr:.2f}", delta=f"{ica_m.neuron_corr - pca_m.neuron_corr:+.2f} ggü. PCA", delta_color="normal",
           help="Mittlere |Korrelation| der Neuronen mit ihrer Schätzung. 1 = perfekt.")
 m2.metric("Spitzen-F1 (ICA)", f"{ica_m.f1:.2f}", delta=f"{ica_m.f1 - pca_m.f1:+.2f} ggü. PCA", delta_color="normal",
-          help="Wie viele der wahren Spitzen auf der Schätzung gefunden werden (Toleranz ±4 Abtastwerte), harmonisches Mittel aus Treffer- und Genauigkeit.")
+          help="Wie viele der wahren Spitzen auf der Schätzung gefunden werden (Toleranz ±4 Abtastwerte), harmonisches Mittel aus Trefferquote und Präzision.")
 m3.metric("Signal-zu-Interferenz", f"{ica_m.neuron_sir:.1f} dB", delta=f"{ica_m.neuron_sir - pca_m.neuron_sir:+.1f} dB ggü. PCA", delta_color="normal",
           help="Aus der Korrelation: ρ²/(1-ρ²) in dB - wie viel stärker die richtige Quelle ist als alle anderen in der Schätzung.")
 m4.metric("Amari-Index (ICA)", f"{analysis.amari['ica']:.3f}", delta=f"{analysis.amari['ica'] - analysis.amari['pca']:+.3f} ggü. PCA", delta_color="inverse",
@@ -329,7 +329,7 @@ elif code == "gauss_pair":
     st.warning(f"⚠️ Zwei Gauß'sche Hintergrundquellen: sie lassen sich beliebig drehen, ohne dass sich ihre Nicht-Gaußianität ändert - ICA kann sie nicht sicher trennen (SIR des Paars hier {vd['bg_sir']:.1f} dB, je nach Datensatz "
                f"zwischen 0 und 7 dB; Abschnitt 🚧). Die Neuronen werden trotzdem getrennt (Korrelation {vd['ica']:.2f}).")
 elif code == "delay":
-    st.warning(f"⚠️ Die Laufzeitverzögerung verletzt die Annahme der momentanen Mischung: Korrelation {vd['ica']:.2f} statt {vd['ref_instant']:.2f} ohne Verzögerung (gleiche Daten), Spitzen-F1 {vd['f1']:.2f}. "
+    st.warning(f"⚠️ Die Laufzeitverzögerung verletzt die Annahme der instantanen Mischung: Korrelation {vd['ica']:.2f} statt {vd['ref_instant']:.2f} ohne Verzögerung (gleiche Daten), Spitzen-F1 {vd['f1']:.2f}. "
                "Eine Entmischung mit einer einzigen Matrix kann Verzögerungen nicht ausgleichen - das ist der Ansatzpunkt der Verzögerungsgraph-Methode im Spike-Sorting.")
 elif code == "noise":
     st.warning(f"⚠️ Das Rauschen kostet viel: Korrelation {vd['ica']:.2f} statt {vd['ref_clean']:.2f} ohne Rauschen. Entmischen verstärkt das Rauschen mit"
@@ -455,7 +455,7 @@ st.markdown(
 |---|---|---|
 | **nicht Gauß'sch** | Zwei Gauß'sche Quellen sind beliebig drehbar - nicht sicher trennbar (je nach Datensatz gelingt es teils trotzdem). Eine einzelne bleibt trennbar. | **SOBI**: nutzt die zeitliche Struktur (verschiedene Autokorrelation) statt der Verteilungsform |
 | **mindestens so viele Sensoren wie Quellen** | Die Mischung ist nicht umkehrbar (Abschnitte 🎯 und 📐). | **Sparse Component Analysis**: mehr Quellen als Sensoren, wenn die Quellen selten gleichzeitig aktiv sind |
-| **momentane Mischung** | Laufzeitunterschiede zwischen den Elektroden verschlechtern die Trennung (Abschnitte 🎯 und 📐). | **Spike-Sorting-Zweig** inkl. Verzögerungsgraph und Vorlagenabgleich |
+| **instantane Mischung** | Laufzeitunterschiede zwischen den Elektroden verschlechtern die Trennung (Abschnitte 🎯 und 📐). | **Spike-Sorting-Zweig** inkl. Verzögerungsgraph und Vorlagenabgleich |
 | **Vorzeichen frei** | Bei Quellen, die nur positiv sein können (Leistung, Verbrauch), ist das Vorzeichen nicht beliebig. | **NMF**: Nichtnegativität statt Unabhängigkeit |
 """
 )
@@ -494,14 +494,14 @@ with st.expander("📐 Mathematische Formulierung"):
 **Modell.** $x(t) = A\,s(t) + \varepsilon(t)$ mit $x \in \mathbb{R}^n$ (Elektroden), $s \in \mathbb{R}^k$ (Quellen, statistisch unabhängig, höchstens eine Gauß'sch), $A \in \mathbb{R}^{n \times k}$, $n \ge k$.
 Gesucht $W$ mit $\hat s = W x$. Identifizierbar nur bis auf Permutation und Skalierung (Comon, 1994).
 
-**Weißen.** Mit $C = \tfrac1T \tilde X \tilde X^\top = V \Lambda V^\top$ ($\tilde X$ zentriert) ist $K = \Lambda_k^{-1/2} V_k^\top$ und $Z = K \tilde X$ hat die Kovarianz $I$. Danach ist $Z = R\,s$ mit orthogonalem $R$ - übrig
+**Weißen (Whitening).** Mit $C = \tfrac1T \tilde X \tilde X^\top = V \Lambda V^\top$ ($\tilde X$ zentriert) ist $K = \Lambda_k^{-1/2} V_k^\top$ und $Z = K \tilde X$ hat die Kovarianz $I$. Danach ist $Z = R\,s$ mit orthogonalem $R$ - übrig
 bleibt die Suche nach der Drehung. (Weißen = Hauptkomponenten, skaliert - die einzige Verbindung zur Dimensionsreduktion-Linie.)
 
 **Kontrast.** Für eine Projektion $y = w^\top z$, $\lVert w \rVert = 1$: $J(y) = \left(E[G(y)] - E[G(\nu)]\right)^2$ mit $\nu \sim \mathcal N(0,1)$ und $G$ = $\log\cosh y$, $-e^{-y^2/2}$ oder $y^4/4$ (Kurtosis).
 $g = G'$ ist $\tanh y$, $y\,e^{-y^2/2}$ bzw. $y^3$.
 
 **FastICA (symmetrisch).** $W \leftarrow E[g(WZ)\,Z^\top] - \operatorname{diag}(E[g'(WZ)])\,W$, dann $W \leftarrow (WW^\top)^{-1/2} W$ bis $\max_i \big|\,|w_i^{\text{neu}\top} w_i| - 1\big| < 10^{-6}$. **Deflation:** eine Zeile nach der anderen,
-jeweils orthogonal zu den bisherigen. Die Schätzquellen sind $\hat s = W K \tilde X$.
+jeweils orthogonal zu den bisherigen. Die geschätzten Quellen sind $\hat s = W K \tilde X$.
 
 **Kennzahlen.** Zuordnung Quelle - Komponente: exakt (Bitmasken-DP) über die Summe der $|\rho|$; Vorzeichen und Skala per Regression. SIR $= 10\log_{10}\frac{\rho^2}{1-\rho^2}$. **Amari-Index** von $P = W K A$:
 $\frac{1}{2d(d-1)}\Big[\sum_i \big(\tfrac{\sum_j |p_{ij}|}{\max_j |p_{ij}|} - 1\big) + \sum_j \big(\tfrac{\sum_i |p_{ij}|}{\max_i |p_{ij}|} - 1\big)\Big]$, $d = \max(k, \text{Zeilen})$.

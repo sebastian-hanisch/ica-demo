@@ -75,7 +75,7 @@ Kurtosis der Neuronen im Standard-Seed: 99 / 35 / 41 / 43 (Gauß = 0), Sinusrhyt
 - **Die Länge der Aufnahme wirkt kaum:** 500 Abtastwerte reichen für 0.965. Der Regler bleibt (die Demo soll das zeigen), der Sweep ist bewusst flach.
 - **Synthetische Daten:** jede Spitze eines Neurons hat exakt dieselbe Form (keine Amplitudenschwankung), die Mischung ist bis auf die Verzögerung exakt linear, das Rauschen ist weiß und Gauß'sch, Elektroden liegen auf einer Zeile. Echte Ableitungen sind schwieriger; überlappende Spitzen (Kollisionen) wurden nicht gesondert gemessen.
 - **Die Quellenzahl wird als bekannt angenommen.** Bei unbekannter Zahl (Modellwahl) macht die Demo keine Aussage.
-- **Amari-Index bei Verzögerung** ist gegen die Mischung ohne Verzögerung gerechnet – es gibt bei gefalteter Mischung keine einzelne wahre Matrix.
+- **Amari-Index bei Verzögerung** ist gegen die Mischung ohne Verzögerung gerechnet – es gibt bei konvolutiver Mischung keine einzelne wahre Matrix.
 
 ## Verifikation
 
